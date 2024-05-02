@@ -13,14 +13,6 @@ data class WebsocketIdentifier(
     var session: WebSocketSession? = null
 ): BaseDto()
 
-data class WsRequestBody(
-    var from: String? = null,
-    var to: String? = null,
-    var content: String? = null,
-    var type: String? = null,
-    var date: Long? = null
-): BaseDto()
-
 data class DebeziumUserMessage<T> (
     var schema  : Schema?,
     var payload : Payload<T>?

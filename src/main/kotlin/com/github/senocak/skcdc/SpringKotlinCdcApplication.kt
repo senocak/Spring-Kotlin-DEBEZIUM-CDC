@@ -26,7 +26,6 @@ class SpringKotlinCdcApplication(
 ){
     private val log: Logger by logger()
 
-    // https://stackoverflow.com/questions/59799503/postgres-debezium-does-not-publish-the-previous-state-of-a-record
     @Scheduled(cron = "0/10 * * ? * *")
     fun updateInterval() {
         val findById: Optional<User> = userRepository.findById(UUID.fromString("2cb9374e-4e52-4142-a1af-16144ef4a27d"))
