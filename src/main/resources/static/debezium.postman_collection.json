@@ -1,0 +1,129 @@
+{
+	"info": {
+		"_postman_id": "6d179aaf-a958-4d6d-a2b3-db56fb07df76",
+		"name": "debezium",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "7821151",
+		"_collection_link": "https://lively-comet-8198.postman.co/workspace/An%C4%B1l~d33d46fc-ebc0-4ccb-81ba-caceff009d2d/collection/7821151-6d179aaf-a958-4d6d-a2b3-db56fb07df76?action=share&source=collection_link&creator=7821151"
+	},
+	"item": [
+		{
+			"name": "connectors",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var connectors = pm.response.json()",
+							"pm.collectionVariables.set(\"firstConnectorName\", connectors[0])"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8083/connectors",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8083",
+					"path": [
+						"connectors"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "connectors Copy",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"postgreSQL-connector-local\",\n    \"config\": {\n        \"name\": \"postgreSQL-connector-local\",\n        \"connector.displayName\": \"PostgreSQLL\",\n        \"connector.class\": \"io.debezium.connector.postgresql.PostgresConnector\",\n        \"tasks.max\": \"1\",\n        \"topic.prefix\": \"postgresql-changes-local\",\n        \"database.hostname\": \"postgres\",\n        \"database.port\": \"5432\",\n        \"database.user\": \"postgres\",\n        \"database.password\": \"senocak\",\n        \"database.dbname\": \"boilerplate\",\n        \"database.server.name\": \"master-db\",\n        \"connector.id\": \"postgres\",\n        \"plugin.name\": \"pgoutput\"\n        //\"table.exclude.list\": \"audit\",\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8083/connectors",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8083",
+					"path": [
+						"connectors"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "connector",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8083/connectors/{{firstConnectorName}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8083",
+					"path": [
+						"connectors",
+						"{{firstConnectorName}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "connector",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8083/connectors/{{firstConnectorName}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8083",
+					"path": [
+						"connectors",
+						"{{firstConnectorName}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "firstConnectorName",
+			"value": ""
+		}
+	]
+}

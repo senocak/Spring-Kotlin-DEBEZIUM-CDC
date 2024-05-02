@@ -1,0 +1,50 @@
+<html lang="tr">
+    <head>
+        <title>Spring Kotlin Debezium CDC</title>
+        <script type="text/javascript">
+            let myWebSocket
+            function connectToWS() {
+                const endpoint = document.getElementById("endpoint").value
+                if (myWebSocket !== undefined) {
+                    console.error("Websocket connection exist")
+                    myWebSocket.close()
+                }
+                myWebSocket = new WebSocket(endpoint)
+                myWebSocket.onmessage = function(event) {
+                    const msg = JSON.parse(event.data);
+                    displayMessage(msg.payload.before);
+                }
+                myWebSocket.onopen = function(evt) {
+                    console.log("onopen.", evt);
+                }
+                myWebSocket.onclose = function(evt) {
+                    console.log("onclose.", evt)
+                }
+                myWebSocket.onerror = function(evt) {
+                    console.log("Error!", evt)
+                }
+            }
+            function sendMsg() {
+                const message = document.getElementById("myMessage").value;
+                myWebSocket.send(message);
+            }
+            function closeConn() {
+                myWebSocket.close();
+            }
+            function displayMessage(message) {
+                const messageContainer = document.getElementById("messageContainer");
+                const newMessageElement = document.createElement("div");
+                console.log(message.email)
+                newMessageElement.textContent = "Email: " + message.email + "("+message.name+")";
+                messageContainer.appendChild(newMessageElement);
+            }
+        </script>
+    </head>
+    <body>
+        <input type="text" id="endpoint" name="endpoint" value="ws://localhost:8080/ws?email=asd@asd.asd"  style="width: 300px" >
+        <input type="button" onclick="connectToWS()" value="Bağlan" />
+        <input type="button" onclick="closeConn()" value="Kapat" />
+        <input type="text" id="myMessage" name="myMessage" value="hi there!"><input type="button" onclick="sendMsg()" value="Gönder" />
+        <div id="messageContainer"></div>
+    </body>
+</html>

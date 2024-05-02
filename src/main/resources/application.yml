@@ -1,0 +1,32 @@
+server:
+    port: 8080
+spring:
+    application:
+        name: Spring-Kotlin-CDC
+    docker:
+        compose:
+            enabled: true
+            lifecycle-management: start_only
+    datasource:
+        url: jdbc:postgresql://${SERVER_IP:localhost}:${POSTGRESQL_PORT:5432}/${POSTGRESQL_DB:boilerplate}?currentSchema=${POSTGRESQL_SCHEMA:public}
+        username: ${POSTGRESQL_USER:postgres}
+        password: ${POSTGRESQL_PASSWORD:senocak}
+    flyway:
+        locations: classpath:migration
+        placeholderReplacement: false
+        sql-migration-prefix: V
+        table: flyway_schema_history
+        enabled: true
+    jpa:
+        properties:
+            hibernate:
+                dialect: org.hibernate.dialect.PostgreSQLDialect
+        hibernate:
+            ddl-auto: validate
+    kafka:
+        consumer:
+            bootstrap-servers: localhost:9092
+            group-id: group_id
+            auto-offset-reset: earliest
+            key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+            value-deserializer: org.apache.kafka.common.serialization.StringDeserializer

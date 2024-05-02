@@ -1,0 +1,55 @@
+version: '3.7'
+services:
+  postgres:
+    image: postgres:14
+    container_name: postgres
+    restart: always
+    environment:
+      POSTGRES_DB: blog
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: senocak
+      PGDATA: /var/lib/postgresql/data/pgdata
+    volumes:
+      - db-data:/var/lib/postgresql/data
+      - ./var/logs/postgresql:/var/log/postgresql
+    command:
+      - "postgres"
+      - "-c"
+      - "wal_level=logical"
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: "pg_isready -U postgres"
+    networks:
+      - cdc
+  connect:
+    image: debezium/connect:2.4.0.Final
+    ports:
+      - "8083:8083"
+      - "8778:8778"
+    links:
+      - kafka
+      - postgres
+    environment:
+      - BOOTSTRAP_SERVERS=kafka:29092
+      - GROUP_ID=debezium-events
+      - CONFIG_STORAGE_TOPIC=debezium_configs
+      - OFFSET_STORAGE_TOPIC=debezium_offsets
+      - STATUS_STORAGE_TOPIC=debezium_statuses
+    networks:
+      - cdc
+  debezium-ui:
+    image: debezium/debezium-ui:2.4
+    platform: linux/amd64
+    environment:
+      - KAFKA_CONNECT_URIS=http://connect:8083  # Pointing to Kafka Connect service
+    ports:
+      - "9091:8080"
+    depends_on:
+      - connect
+    networks:
+      - cdc
+volumes:
+  db-data:
+networks:
+  cdc:
