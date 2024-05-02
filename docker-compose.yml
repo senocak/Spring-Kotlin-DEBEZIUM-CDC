@@ -22,6 +22,40 @@ services:
       test: "pg_isready -U postgres"
     networks:
       - cdc
+  zookeeper:
+    image: confluentinc/cp-zookeeper:6.1.9
+    platform: linux/x86_64
+    ports:
+      - "2181:2181"
+    container_name: zookeeper
+    environment:
+      ZOOKEEPER_SERVER_ID: 1
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+      ZOOKEEPER_INIT_LIMIT: 5
+      ZOOKEEPER_SYNC_LIMIT: 2
+    networks:
+      - cdc
+  kafka:
+    image: confluentinc/cp-kafka:6.1.9
+    platform: linux/x86_64
+    ports:
+      - '9092:9092'
+    expose:
+      - '29092'
+    container_name: kafka
+    environment:
+      KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: '1'
+      KAFKA_MIN_INSYNC_REPLICAS: '1'
+    restart: unless-stopped
+    depends_on:
+      - zookeeper
+    networks:
+      - cdc
   connect:
     image: debezium/connect:2.4.0.Final
     ports:
