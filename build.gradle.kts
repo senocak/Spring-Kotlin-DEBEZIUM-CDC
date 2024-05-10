@@ -14,7 +14,7 @@ version = "0.0.1-SNAPSHOT"
 java {
     sourceCompatibility = JavaVersion.VERSION_17
 }
-
+val debezium = "2.7.0.Alpha1"
 repositories {
     mavenCentral()
 }
@@ -27,6 +27,12 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.springframework.kafka:spring-kafka")
     implementation("org.flywaydb:flyway-core")
+
+    //Embedded
+    implementation("io.debezium:debezium-api:$debezium")
+    implementation("io.debezium:debezium-embedded:$debezium")
+    implementation("io.debezium:debezium-connector-postgres:$debezium")
+
     runtimeOnly("org.springframework.boot:spring-boot-docker-compose")
     runtimeOnly("org.postgresql:postgresql")
 
